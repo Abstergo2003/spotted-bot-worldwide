@@ -9,7 +9,7 @@ IMPORTANT: READ THIS BEFORE RUNNING BOT OR ADIING IT TO SERVER
 INTRODUCTION
 
 This is bot that creates spotted infrascturcture on your dc channel
-when it joins it creates 3 channels
+when it joins it creates 3 channels and 1 role
 
 1. Post channel 	- people can send their messages here, it gets deleted as soon as it appears on channel
 			- if someone wants to attach image to this file he has to type 'img' in his message, also please don't dype it if not attaching any image
@@ -21,6 +21,7 @@ when it joins it creates 3 channels
 3. Logs channel		- only administrator can see this channel
 			- here are gathered logs of spotted such as author and his message including attachment
 			- this is your only way to punish trolls
+3. Damn Troll role	- as any one on server can use spotted bot creates role to mark users banned from using spotted (both of them)
 #################################################################################################
 Other commands
 
