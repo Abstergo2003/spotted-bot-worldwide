@@ -8,7 +8,7 @@ IMPORTANT: READ THIS BEFORE RUNNING BOT OR ADIING IT TO SERVER
 #################################################################################################
 INTRODUCTION
 
-This is bot that creates spotted infrascturcture on your dc channel
+This is bot that creates spotted infrascturcture on your dc server
 when it joins it creates 3 channels and 1 role
 
 1. Post channel 	- people can send their messages here, it gets deleted as soon as it appears on channel
