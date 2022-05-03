@@ -1,335 +1,327 @@
 module.exports = {
+  name: 'Set Role Permissions',
+  section: 'Role Control',
+  meta: {
+    version: '2.1.1',
+    preciseCheck: false,
+    author: 'DBM Mods',
+    authorUrl: 'https://github.com/dbm-network/mods',
+    downloadURL: 'https://github.com/dbm-network/mods/blob/master/actions/set_role_perms_MOD.js',
+  },
 
-//---------------------------------------------------------------------
-// Action Name
-//
-// This is the name of the action displayed in the editor.
-//---------------------------------------------------------------------
+  subtitle(data, presets) {
+    const index = ['Granted', 'Denied'];
+    const perm = [
+      'Administrator',
+      'Manage Guild',
+      'Manage Nicknames',
+      'Manage Roles',
+      'Manage Emojis',
+      'Kick Members',
+      'Ban Members',
+      'View Audit Log',
+      'Change Nickname',
+      'Create Instant Invite',
+      'Priority Speaker',
+      'Manage Channel',
+      'Manage Webhooks',
+      'Read Messages (Deprecated)',
+      'Send Messages',
+      'Send TTS Messages',
+      'Manage Messages',
+      'Embed Links',
+      'Attach Files',
+      'Read Message History',
+      'Mention Everyone',
+      'Use External Emojis',
+      'Add Reactions',
+      'Connect to Voice',
+      'Speak in Voice',
+      'Mute Members',
+      'Deafen Members',
+      'Move Members',
+      'Use Voice Activity',
+      'All Permissions',
+      'Stream',
+      'View Channels',
+      'Moderate Member',
+      'Send Messages In Threads',
+      'Create Public Threads',
+      'Create Private Threads',
+      'Use External Stickers',
+      'Manage Threads',
+      'Use Application Commands',
+      'Use Activities',
+      'Manage Events',
+    ];
+    return `${presets.getRoleText(data.role, data.varName)} - ${perm[data.permission]} - ${index[data.state]} ${
+      !data.reason ? '' : `with Reason: <i>${data.reason}<i>`
+    }`;
+  },
 
-name: "Set Role Permissions",
+  fields: ['role', 'varName', 'permission', 'state', 'reason'],
 
-//---------------------------------------------------------------------
-// Action Section
-//
-// This is the section the action will fall into.
-//---------------------------------------------------------------------
-
-section: "Role Control",
-
-//---------------------------------------------------------------------
-// Action Subtitle
-//
-// This function generates the subtitle displayed next to the name.
-//---------------------------------------------------------------------
-
-subtitle: function(data) {
-	const roles = ['Mentioned Role', '1st Author Role', '1st Server Role', 'Temp Variable', 'Server Variable', 'Global Variable'];
-	const index = ['Granted', 'Denied']
-	const perm = ['Administrator', 'Manage Guild', 'Manage Nicknames', 'Manage Roles', 'Manage Emojis', 'Kick Members', 'Ban Members', 'View Audit Log', 'Change Nickname', 'Create Instant Invite', 'Priority Speaker', 'Manage Channel', 'Manage Webhooks', 'Read Messages', 'Send Messages', 'Send TTS Messages', 'Manage Messages', 'Embed Links', 'Attach Files', 'Read Message History', 'Mention Everyone', 'Use External Emojis', 'Add Reactions', 'Connect to Voice', 'Speak in Voice', 'Mute Members', 'Deafen Members', 'Move Members', 'Use Voice Activity', 'All Permissions']
-  return `${roles[data.role]} - ${perm[data.permission]} - ${index[data.state]} ${!data.reason ? "" : `with Reason: <i>${data.reason}<i>`}`;
-},
-
-//---------------------------------------------------------------------
-// DBM Mods Manager Variables (Optional but nice to have!)
-//
-// These are variables that DBM Mods Manager uses to show information
-// about the mods for people to see in the list.
-//---------------------------------------------------------------------
-
-// Who made the mod (If not set, defaults to "DBM Mods")
-author: "MrGold & EliteArtz",
-
-// The version of the mod (Defaults to 1.0.0)
-version: "1.9.3", //Added in 1.8.2
-
-// A short description to show on the mod line for this mod (Must be on a single line)
-short_description: "Allows it to edit a roles permissions",
-
-// If it depends on any other mods by name, ex: WrexMODS if the mod uses something from WrexMods
-
-
-//---------------------------------------------------------------------
-
-//---------------------------------------------------------------------
-// Action Fields
-//
-// These are the fields for the action. These fields are customized
-// by creating elements with corresponding IDs in the HTML. These
-// are also the names of the fields stored in the action's JSON data.
-//---------------------------------------------------------------------
-
-fields: ["role", "varName", "permission", "state", "reason"],
-
-//---------------------------------------------------------------------
-// Command HTML
-//
-// This function returns a string containing the HTML used for
-// editting actions.
-//
-// The "isEvent" parameter will be true if this action is being used
-// for an event. Due to their nature, events lack certain information,
-// so edit the HTML to reflect this.
-//
-// The "data" parameter stores constants for select elements to use.
-// Each is an array: index 0 for commands, index 1 for events.
-// The names are: sendTargets, members, roles,
-//                messages, servers, variables
-//---------------------------------------------------------------------
-
-html: function(isEvent, data) {
-	return `
-	<div>
-		<p>
-			<u>Mod Info:</u><br>
-			Created by <b>MrGold</b> & <b>EliteArtz</b>!
-		</p>
-	</div><br>
+  html(isEvent, data) {
+    return `
 <div style="padding-top: 8px;">
-	<div style="float: left; width: 35%;">
-		Source Role:<br>
-		<select id="role" class="round" onchange="glob.roleChange(this, 'varNameContainer')">
-			${data.roles[isEvent ? 1 : 0]}
-		</select>
-	</div>
-	<div id="varNameContainer" style="display: none; float: right; width: 60%;">
-		Variable Name:<br>
-		<input id="varName" class="round" type="text" list="variableList"><br>
-	</div>
+  <div style="float: left; width: 35%;">
+    Source Role:<br>
+    <select id="role" class="round" onchange="glob.roleChange(this, 'varNameContainer')">
+      ${data.roles[isEvent ? 1 : 0]}
+    </select>
+  </div>
+  <div id="varNameContainer" style="display: none; float: right; width: 60%;">
+    Variable Name:<br>
+    <input id="varName" class="round" type="text" list="variableList"><br>
+  </div>
 </div><br><br><br>
 <div style="padding-top: 8px;">
-	<div style="float: left; width: 45%;">
-		Permission:<br>
-		<select id="permission" class="round">
-			<option value="0" selected>Administrator</option>
-			<option value="1">Manage Guild</option>
-			<option value="2">Manage Nicknames</option>
-			<option value="3">Manage Roles</option>
-			<option value="4">Manage Emojis</option>
-			<option value="5">Kick Members</option>
-			<option value="6">Ban Members</option>
-			<option value="7">View Audit Log</option>
-			<option value="8">Change Nickname</option>
-			<option value="9">Create Instant Invite</option>
-			<option value="10">Priority Speaker</option>
-			<option value="11">Manage Channel</option>
-			<option value="12">Manage Webhooks</option>
-			<option value="13">Read Messages</option>
-			<option value="14">Send Messages</option>
-			<option value="15">Send TTS Messages</option>
-			<option value="16">Manage Messages</option>
-			<option value="17">Embed Links</option>
-			<option value="18">Attach Files</option>
-			<option value="19">Read Message History</option>
-			<option value="20">Mention Everyone</option>
-			<option value="21">Use External Emojis</option>
-			<option value="22">Add Reactions</option>
-			<option value="23">Connect to Voice</option>
-			<option value="24">Speak in Voice</option>
-			<option value="25">Mute Members</option>
-			<option value="26">Deafen Members</option>
-			<option value="27">Move Members</option>
-			<option value="28">Use Voice Activity</option>
-			<option value="29">All Permissions</option>
-		</select>
-	</div>
-	<div style="padding-left: 5%; float: left; width: 55%;">
-		Change To:<br>
-  		<select id="state" class="round">
-	  	<option value="0" selected>Granted</option>
-	   	<option value="1">Denied</option>
-		</select>
-	</div>
+  <div style="float: left; width: 45%;">
+    Permission:<br>
+    <select id="permission" class="round">
+      <optgroup label="General Server Permissions">
+        <option value="31">View Channels</option>
+        <option value="11">Manage Channels</option>
+        <option value="3">Manage Roles</option>
+        <option value="4">Manage Emojis and Stickers</option>
+        <option value="7">View Audit Log</option>
+        <option value="12">Manage Webhooks</option>
+        <option value="1">Manage Server</option>
+      </optgroup>
+      
+      <optgroup label="Membership Permissions">
+        <option value="9">Create Invite</option>
+        <option value="8">Change Nickname</option>
+        <option value="2">Manage Nicknames</option>
+        <option value="5">Kick Members</option>
+        <option value="6">Ban Members</option>
+        <option value="32">Moderate Member</option>
+      </optgroup>
+      
+      <optgroup label="Text Channel Permissions">
+        <option value="13" class="deprecated" disabled>Read Messages (Deprecated)</option>
+        <option value="14">Send Messages</option>
+        <option value="33">Send Messages In Threads</option>
+        <option value="34">Create Public Threads</option>
+        <option value="35">Create Private Threads</option>
+        <option value="17">Embed Links</option>
+        <option value="18">Attach Files</option>
+        <option value="22">Add Reactions</option>
+        <option value="21">Use External Emojis</option>
+        <option value="36">Use External Stickers</option>
+        <option value="20">Mention Everyone</option>
+        <option value="16">Manage Messages</option>
+        <option value="37">Manage Threads</option>
+        <option value="19">Read Message History</option>
+        <option value="15">Send TTS Messages</option>
+        <option value="38">Use Application Commands</option>
+      </optgroup>
+
+      <optgroup label="Voice Channel Permissions">
+        <option value="23">Connect</option>
+        <option value="24">Speak</option>
+        <option value="30">Stream</option>
+        <option value="39">Use Activities</option>
+        <option value="28">Use Voice Activity</option>
+        <option value="10">Priority Speaker</option>
+        <option value="25">Mute Members</option>
+        <option value="26">Deafen Members</option>
+        <option value="27">Move Members</option>
+      </optgroup>
+
+      <optgroup label="Events Permissions">
+        <option value="40">Manage Events</option>
+      </optgroup>
+
+      <optgroup label="Advanced Permissions">
+        <option value="0" selected>Administrator</option>
+        <option value="29">All Permissions</option>
+      </optgroup>
+    </select>
+  </div>
+  <div style="padding-left: 5%; float: left; width: 55%;">
+    Change To:<br>
+      <select id="state" class="round">
+      <option value="0" selected>Granted</option>
+      <option value="1">Denied</option>
+    </select>
+  </div>
 </div><br><br><br>
 <div style="padding-top: 8px;">
-	Reason:<br>
-	<textarea id="reason" rows="2" placeholder="Insert reason here... (optional)" style="width: 99%; font-family: monospace; white-space: nowrap; resize: none;"></textarea>
-</div>`
-},
+  Reason:<br>
+  <textarea id="reason" rows="2" placeholder="Insert reason here... (optional)" style="width: 99%; font-family: monospace; white-space: nowrap; resize: none;"></textarea>
+</div>
+<style>
+.deprecated[disabled] {
+  color: var(--placeholder-text-color, #aaa);
+}
+.deprecated[disabled]:not(:checked) {
+  display:none;
+}
+</style>`;
+  },
 
-//---------------------------------------------------------------------
-// Action Editor Init Code
-//
-// When the HTML is first applied to the action editor, this code
-// is also run. This helps add modifications or setup reactionary
-// functions for the DOM elements.
-//---------------------------------------------------------------------
+  init() {
+    const { glob, document } = this;
+    glob.roleChange(document.getElementById('role'), 'varNameContainer');
+  },
 
-init: function() {
-	const {glob, document} = this;
+  async action(cache) {
+    const data = cache.actions[cache.index];
+    const { FLAGS, ALL } = this.getDBM().DiscordJS.Permissions;
+    const storage = parseInt(data.role, 10);
+    const varName = this.evalMessage(data.varName, cache);
+    const role = await this.getRole(storage, varName, cache);
+    const info = parseInt(data.permission, 10);
+    const reason = this.evalMessage(data.reason, cache);
 
-	glob.roleChange(document.getElementById('role'), 'varNameContainer')
-},
-
-//---------------------------------------------------------------------
-// Action Bot Function
-//
-// This is the function for the action within the Bot's Action class.
-// Keep in mind event calls won't have access to the "msg" parameter,
-// so be sure to provide checks for variable existance.
-//---------------------------------------------------------------------
-
-action: function(cache) {
-	const data = cache.actions[cache.index];
-	const storage = parseInt(data.role);
-	const varName = this.evalMessage(data.varName, cache);
-	const role = this.getRole(storage, varName, cache);
-	const info = parseInt(data.permission);
-	const reason = this.evalMessage(data.reason, cache);
-	
-	if(data.permission == "29") {
-	const options = {};
-	options[data.permission] = data.state === "0" ? true : (data.state === "1" ? false : null);
-	if(role && role.id) {
-		if(Array.isArray(role)) {
-			this.callListFunc(role, 'setPermissions', [role.id, options]).then(function() {
-				this.callNextAction(cache);
-			}.bind(this));
-		} else if(role && role.setPermissions) {
-			} if(data.state === "0") {
-			    role.setPermissions(2146958847, reason).then(function() {
-				    this.callNextAction(cache);
-			    }.bind(this)).catch(this.displayError.bind(this, data, cache));
-			} else if(data.state === "1") {
-			    role.setPermissions([0], reason).then(function() {
-				    this.callNextAction(cache);
-			    }.bind(this)).catch(this.displayError.bind(this, data, cache));
-		} else {
-			this.callNextAction(cache);
-		}
-	} else {
-		this.callNextAction(cache);
-	}
+    let result;
+    switch (info) {
+      case 0:
+        result = FLAGS.ADMINISTRATOR;
+        break;
+      case 1:
+        result = FLAGS.MANAGE_GUILD;
+        break;
+      case 2:
+        result = FLAGS.MANAGE_NICKNAMES;
+        break;
+      case 3:
+        result = FLAGS.MANAGE_ROLES;
+        break;
+      case 4:
+        result = FLAGS.MANAGE_EMOJIS_AND_STICKERS;
+        break;
+      case 5:
+        result = FLAGS.KICK_MEMBERS;
+        break;
+      case 6:
+        result = FLAGS.BAN_MEMBERS;
+        break;
+      case 7:
+        result = FLAGS.VIEW_AUDIT_LOG;
+        break;
+      case 8:
+        result = FLAGS.CHANGE_NICKNAME;
+        break;
+      case 9:
+        result = FLAGS.CREATE_INSTANT_INVITE;
+        break;
+      case 10:
+        result = FLAGS.PRIORITY_SPEAKER;
+        break;
+      case 11:
+        result = FLAGS.MANAGE_CHANNELS;
+        break;
+      case 12:
+        result = FLAGS.MANAGE_WEBHOOKS;
+        break;
+      case 13:
+        result = FLAGS.VIEW_CHANNEL; // Read Messages (Deprecated) fallback
+        break;
+      case 14:
+        result = FLAGS.SEND_MESSAGES;
+        break;
+      case 15:
+        result = FLAGS.SEND_TTS_MESSAGES;
+        break;
+      case 16:
+        result = FLAGS.MANAGE_MESSAGES;
+        break;
+      case 17:
+        result = FLAGS.EMBED_LINKS;
+        break;
+      case 18:
+        result = FLAGS.ATTACH_FILES;
+        break;
+      case 19:
+        result = FLAGS.READ_MESSAGE_HISTORY;
+        break;
+      case 20:
+        result = FLAGS.MENTION_EVERYONE;
+        break;
+      case 21:
+        result = FLAGS.USE_EXTERNAL_EMOJIS;
+        break;
+      case 22:
+        result = FLAGS.ADD_REACTIONS;
+        break;
+      case 23:
+        result = FLAGS.CONNECT;
+        break;
+      case 24:
+        result = FLAGS.SPEAK;
+        break;
+      case 25:
+        result = FLAGS.MUTE_MEMBERS;
+        break;
+      case 26:
+        result = FLAGS.DEAFEN_MEMBERS;
+        break;
+      case 27:
+        result = FLAGS.MOVE_MEMBERS;
+        break;
+      case 28:
+        result = FLAGS.USE_VAD;
+        break;
+      case 29:
+        result = ALL;
+        break;
+      case 30:
+        result = FLAGS.STREAM;
+        break;
+      case 31:
+        result = FLAGS.VIEW_CHANNEL;
+        break;
+      case 32:
+        result = FLAGS.MODERATE_MEMBERS;
+        break;
+      case 33:
+        result = FLAGS.SEND_MESSAGES_IN_THREADS;
+        break;
+      case 34:
+        result = FLAGS.CREATE_PUBLIC_THREADS;
+        break;
+      case 35:
+        result = FLAGS.CREATE_PRIVATE_THREADS;
+        break;
+      case 36:
+        result = FLAGS.USE_EXTERNAL_STICKERS;
+        break;
+      case 37:
+        result = FLAGS.MANAGE_THREADS;
+        break;
+      case 38:
+        result = FLAGS.USE_APPLICATION_COMMANDS;
+        break;
+      case 39:
+        result = FLAGS.START_EMBEDDED_ACTIVITIES;
+        break;
+      case 40:
+        result = FLAGS.MANAGE_EVENTS;
+        break;
+      default:
+        break;
     }
 
-	let result;
-	switch(info) {
-		case 0:
-			result = 8;
-			break;
-		case 1:
-			result = 32;
-			break;
-		case 2:
-			result = 134217728;
-			break;
-		case 3:
-			result = 268435456;
-			break;
-		case 4:
-			result = 1073741824;
-			break;
-		case 5:
-			result = 2;
-			break;
-		case 6:
-			result = 4;
-			break;
-		case 7:
-			result = 128;
-			break;
-		case 8:
-			result = 67108864;
-			break;
-		case 9:
-			result = 1;
-			break;
-		case 10:
-			result = 256;
-			break;
-		case 11:
-			result = 16;
-			break;
-		case 12:
-			result = 536870912;
-			break;
-		case 13:
-			result = 1024;
-			break;
-		case 14:
-			result = 2048;
-			break;
-		case 15:
-			result = 4096;
-			break;
-		case 16:
-			result = 8192;
-			break;
-		case 17:
-			result = 16384;
-			break;
-		case 18:
-			result = 32768;
-			break;
-		case 19:
-			result = 65536;
-			break;
-		case 20:
-			result = 131072;
-			break;
-		case 21:
-			result = 262144;
-			break;
-		case 22:
-			result = 64;
-			break;
-		case 23:
-			result = 1048576;
-			break;
-		case 24:
-			result = 2097152;
-			break;
-		case 25:
-			result = 4194304;
-			break;
-		case 26:
-			result = 8388608;
-			break;
-		case 27:
-			result = 16777216;
-			break;
-		case 28:
-			result = 33554432;
-			break;
-		default:
-			break;
-	}
+    if (role?.id) {
+      const perms = role.permissions;
 
-	const options = {};
-	options[data.permission] = data.state === "0" ? true : (data.state === "1" ? false : null);
-	if(role && role.id) {
-		if(Array.isArray(role)) {
-			this.callListFunc(role, 'setPermissions', [role.id, options]).then(function() {
-				this.callNextAction(cache);
-			}.bind(this));
-		} else if(role && role.setPermissions) {
-			} if(data.state === "0") {
-			    const perms = role.permissions
-			    role.setPermissions([perms, result], reason).then(function() {
-				    this.callNextAction(cache);
-			    }.bind(this)).catch(this.displayError.bind(this, data, cache));
-			} else if(data.state === "1") {
-			    const perms2 = role.permissions - result
-			    role.setPermissions([perms2], reason).then(function() {
-				    this.callNextAction(cache);
-			    }.bind(this)).catch(this.displayError.bind(this, data, cache));
-		} else {
-			this.callNextAction(cache);
-		}
-	} else {
-		this.callNextAction(cache);
-	}
-},
+      if (data.state === '0') {
+        role
+          .setPermissions([perms, result], reason)
+          .then(() => this.callNextAction(cache))
+          .catch(this.displayError.bind(this, data, cache));
+      } else {
+        role
+          .setPermissions(result !== ALL ? [perms - result] : [0n], reason)
+          .then(() => this.callNextAction(cache))
+          .catch(this.displayError.bind(this, data, cache));
+      }
+    } else {
+      this.callNextAction(cache);
+    }
+  },
 
-//---------------------------------------------------------------------
-// Action Bot Mod
-//
-// Upon initialization of the bot, this code is run. Using the bot's
-// DBM namespace, one can add/modify existing functions if necessary.
-// In order to reduce conflictions between mods, be sure to alias
-// functions you wish to overwrite.
-//---------------------------------------------------------------------
-
-mod: function(DBM) {
-}
-
-}; // End of module
+  mod() {},
+};

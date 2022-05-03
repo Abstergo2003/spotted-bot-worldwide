@@ -1,253 +1,307 @@
 module.exports = {
+  name: 'File Control',
+  section: 'File Stuff',
+  fields: ['input', 'format', 'filename', 'filepath', 'filepath2', 'filetask', 'input2', 'togglestatus'],
+  meta: {
+    version: '2.1.1',
+    preciseCheck: false,
+    author: 'DBM Mods',
+    authorUrl: 'https://github.com/dbm-network/mods',
+    downloadURL: 'https://github.com/dbm-network/mods/blob/master/actions/file_control_MOD.js',
+  },
 
-    //---------------------------------------------------------------------
-    // Action Name
-    //
-    // This is the name of the action displayed in the editor.
-    //---------------------------------------------------------------------
+  subtitle(data) {
+    const filetasks = ['Create', 'Write', 'Append into', 'Delete', 'Insert into', 'Copy'];
+    return `${filetasks[parseInt(data.filetask, 10)]} ${data.filename}${data.format}`;
+  },
 
-    name: "File Control",
-
-    //---------------------------------------------------------------------
-    // Action Section
-    //
-    // This is the section the action will fall into.
-    //---------------------------------------------------------------------
-
-    section: "File Stuff",
-
-    //---------------------------------------------------------------------
-        // DBM Mods Manager Variables (Optional but nice to have!)
-        //
-        // These are variables that DBM Mods Manager uses to show information
-        // about the mods for people to see in the list.
-    //---------------------------------------------------------------------
-
-        // Who made the mod (If not set, defaults to "DBM Mods")
-        author: "Danno3187", //Original Idea by EliteArtz
-
-        // The version of the mod (Defaults to 1.0.0)
-        version: "1.8.7", //Added in 1.8.7
-
-        // A short description to show on the mod line for this mod (Must be on a single line)
-        short_description: "Allows a user to interact with 'Files'",
-
-    //---------------------------------------------------------------------
-        // If it depends on any other mods by name, ex: WrexMODS if the mod uses something from WrexMods
-
-    //---------------------------------------------------------------------
-
-    //---------------------------------------------------------------------
-    // Action Subtitle
-    //
-    // This function generates the subtitle displayed next to the name.
-    //---------------------------------------------------------------------
-
-    subtitle: function(data) {
-        const filetasks = ['Create', 'Write', 'Append', 'Delete'];
-        return `${filetasks[parseInt(data.filetask)]} ${data.filename}${data.format}`;
-    },
-
-    //---------------------------------------------------------------------
-    // Action Fields
-    //
-    // These are the fields for the action. These fields are customized
-    // by creating elements with corresponding IDs in the HTML. These
-    // are also the names of the fields stored in the action's JSON data.
-    //---------------------------------------------------------------------
-
-    fields: ["input", "format", "filename", "filepath", "filetask"],
-
-    //---------------------------------------------------------------------
-    // Command HTML
-    //
-    // This function returns a string containing the HTML used for
-    // editting actions.
-    //
-    // The "isEvent" parameter will be true if this action is being used
-    // for an event. Due to their nature, events lack certain information,
-    // so edit the HTML to reflect this.
-    //
-    // The "data" parameter stores constants for select elements to use.
-    // Each is an array: index 0 for commands, index 1 for events.
-    // The names are: sendTargets, members, roles, channels,
-    //                messages, servers, variables
-    //---------------------------------------------------------------------
-
-    html: function(isEvent, data) {
-        return `
-<div id="scroll"style="width: 550px; height: 350px; overflow-y: scroll;">
-    <div >
-        <p>
-        <u>Mod Info</u><br>
-        Made by Danno3817, EliteArtz & EGGSY</p><br>
-        <div>
-            <div style="float: left; padding-right: 10px; width: 20%;">
-                File Format:<br>
-                <select id="format" class="round">
-                <option value=".json">JSON</option>
-                <option value=".txt">TXT</option>
-                <option value=".js">JS</option>
-                <option value=".log" selected>LOG</option>
-                </select>
-            </div>
-
-            <div style="float: left; padding-right: 10px; width: 20%;">
-                File Task:<br>
-                <select id="filetask" class="round">
-                <option value="0" selected>Create</option>
-                <option value="1">Write</option>
-                <option value="2">Append</option>
-                <option value="3">Delete</option>
-                </select>
-            </div>
-
-            <div style="float: right; width: 50%">
-                File Name:<br>
-                <textarea id="filename" placeholder="Insert File Name Here..." class="round" style="width 50%; resize: none; padding: 4px 0px;" type="textarea" rows="1" cols="25";></textarea><br>
-            </div><br>
-        </div>
-    </div>
-    <div>
-        <div>
-            <div style="float: left; width: 99%">
-                File Path:<br>
-                <textarea id="filepath" placeholder="Insert Path Here... Example Below" class="round" style="width99%; resize: none;" type="textarea" rows="1" cols="60"></textarea><br>
-            </div><br>
-
-            <div style="float: left; width: 99%;">
-            Input Text:<br>
-            <textarea id="input" placeholder="Leave Blank For None." class="round" style="width: 99%; resize: 1;" type="textarea" rows="8" cols="35"></textarea><br>
-            </div><br>
-    </div><br>
-    <div>
-        <div>
-            <p>Important info:<br>
-            You'll need a '/' at the end of the Path '\\\' for windows users.<br>
-            If you want to delete something in current directory, you can add '.' (dot) before '/':<br>
-            e.g:<br>
-            My bot directory is: "<b>/root/myBot/</b>"<br>
-            I want to delete: "<b>/root/myBot/delete.txt</b>"<br>
-            Then I need to write "<b>./delete.txt</b>" in the field.<br><br>
-            <i>Please be careful while using this mod. Don't forget there is no turning back after deleting the file.</i><br>
-            </p>
-        </div>
-    </div>
-</div>`
-    },
-
-    //---------------------------------------------------------------------
-    // Action Editor Init Code
-    //
-    // When the HTML is first applied to the action editor, this code
-    // is also run. This helps add modifications or setup reactionary
-    // functions for the DOM elements.
-    //---------------------------------------------------------------------
-
-    init: function() {},
-
-    //---------------------------------------------------------------------
-    // Action Bot Function
-    //
-    // This is the function for the action within the Bot's Action class.
-    // Keep in mind event calls won't have access to the "msg" parameter,
-    // so be sure to provide checks for variable existance.
-    //---------------------------------------------------------------------
-
-    action: function (cache) {
-        const data = cache.actions[cache.index];
-
-        const fileNAME = this.evalMessage(data.filename, cache);
-        const filePATH = this.evalMessage(data.filepath, cache);
-        const FullFile = filePATH + fileNAME + `${data.format}`;
-        const fs = require('fs');
-
-        const task = parseInt(data.filetask);
-
-        const inputtext = this.evalMessage(data.input, cache);
-
-        switch(task){
-            case 0: //Create
-            console.log("Create File Activated");
-            try {
-                if (filePATH){
-                    if (fileNAME) { 
-                        fs.writeFileSync(FullFile,"");
-                    }else {
-                        console.log("File name is missing.");
-                    }
-                }else{
-                console.log("File path is missing.");
-                }
-            }catch (err){
-                console.log("ERROR!" + err.stack ? err.stack : err);
-            }this.callNextAction(cache);
-            break;
-
-            case 1: //Write
-            try{
-                if (filePATH){
-                    if (fileNAME) { 
-                        fs.writeFileSync(FullFile, inputtext);
-                    }else {
-                        console.log("File name is missing.");
-                    }
-                }else{
-                console.log("File path is missing.");
-                }
-            } catch (err) {
-                console.log("ERROR!" + err.stack ? err.stack : err);
-            }this.callNextAction(cache);
-            break;
-
-            case 2: //Append
-            try {
-                if (filePATH && fileNAME){
-                    fs.appendFileSync(FullFile, inputtext + '\r\n' );
-                }else{
-                console.log("File name or File path is missing.");
-                }
-            }catch (err){
-                console.log("ERROR!" + err.stack ? err.stack : err);
-            }this.callNextAction(cache);
-            break;
-
-            case 3: //Delete
-            try {
-                if (filePATH) {
-                    fs.exists(`${FullFile}`, function(exists) {
-                        if(exists) {
-                            fs.unlink(FullFile, (err) => {
-                                if (err) return console.log(`Something went wrong while deleting: [${err}]`);
-                              });
-                        } else {
-                            console.log('File not found, nothing to delete.');
-                        }
-                      });
-                } else {
-                console.log(`File path is missing.`);
-                }
-            } catch (err) {
-                console.log("ERROR!" + err.stack ? err.stack : err);
-            }
-            this.callNextAction(cache);
-            break;
-
-
-        }
-        this.callNextAction(cache);
-    },
-
-    //---------------------------------------------------------------------
-    // Action Bot Mod
-    //
-    // Upon initialization of the bot, this code is run. Using the bot's
-    // DBM namespace, one can add/modify existing functions if necessary.
-    // In order to reduce conflictions between mods, be sure to alias
-    // functions you wish to overwrite.
-    //---------------------------------------------------------------------
-
-    mod: function(DBM) {
+  html() {
+    return `
+    <style>
+    ::-webkit-scrollbar {
+      width: 10px !important;
     }
 
-    }; // End of module
+    ::-webkit-scrollbar-track {
+      background: inherit !important;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: #3c4035 !important;
+    }
+
+    .col-20l {
+      float: left;
+      width: 20%;
+    }
+
+    .col-17l {
+      float: left;
+      width: 17%;
+    }
+
+    textarea {
+      float: left;
+      width: 100%;
+      resize: 1;
+      padding: 4px 8px;
+    }
+
+    span.wrexlink {
+      color: #99b3ff;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+
+    span.wrexlink:hover {
+      color: #4676b9;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    /* The switch - the box around the slider */
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 40px;
+      height: 20px;
+    }
+
+    /* Hide default HTML checkbox */
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    /* The slider */
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      -webkit-transition: .4s;
+      transition: .4s;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 20px;
+      width: 20px;
+      left: 1px;
+      bottom: 0px;
+      background-color: white;
+      -webkit-transition: .4s;
+      transition: .4s;
+    }
+
+    input:checked+.slider {
+      background-color: #2196F3;
+    }
+
+    input:focus+.slider {
+      box-shadow: 0 0 1px #2196F3;
+    }
+
+    input:checked+.slider:before {
+      -webkit-transform: translateX(18px);
+      -ms-transform: translateX(18px);
+      transform: translateX(18px);
+    }
+
+    /* Rounded sliders */
+    .slider.round {
+      border-radius: 34px;
+    }
+
+    .slider.round:before {
+      border-radius: 50%;
+    }
+  </style>
+  <div id="wrexdiv" style="width: 550px; height: 350px; overflow-y: scroll;" onload="showInput()">
+    <div style="padding-bottom: 100px; padding: 5px 15px 5px 5px">
+      <div style="padding: 5px 10px 5px 5px">
+        <div style="display: flex; flex-direction: row;">
+          <div class="col-20l" style="display: flex; flex-direction: column; flex: 2; padding-right: 1%;">
+            Format:<br>
+            <select id="format" class="round">
+              <option value="" selected>OTHER</option>
+              <option value=".log">LOG</option>
+              <option value=".txt">TXT</option>
+              <option value=".json">JSON</option>
+              <option value=".js">JS</option>
+            </select>
+          </div>
+          <div class="col-17l" style="display: flex; flex-direction: column; flex: 2; padding-right: 1%;">
+            Task:<br>
+            <select id="filetask" title="99% of the time, you want append" class="round">
+              <option value="0" title="Only makes the file">Create</option>
+              <option value="1" title="Overwrites the files contents with yours">Write</option>
+              <option value="2" title="Add the content to the end of the file" selected>Append</option>
+              <option value="4" title="Inserts a line in a specific place in the file">Insert</option>
+              <option value="3" title="Deletes a file, Be VERY carefull with this option">Delete</option>
+              <option value="5" title="Copies a file">Copy</option>
+            </select>
+          </div>
+          <div style="display: flex; flex-direction: column; flex: 8;">
+            File Name:<br>
+            <textarea id="filename" title="If 'Other' add the file .format to the end of the file name" placeholder="Example file name 'myreallycoollog'" class="round" type="textarea" rows="1"></textarea>
+          </div>
+        </div>
+      </div>
+      <div style="padding: 5px 10px 5px 5px">
+        <div style="float: left; width: 100%;">
+          File Path:<br>
+          <textarea class="round col-100" id="filepath" title="./ represents the bots root directory. Use instead of an absolute path > C:/path/to/bot/" placeholder="Example Path = ./logs/date/example-date/" class="round" type="textarea" rows="3"></textarea><br>
+        </div>
+      </div>
+      <div id="newPath" style="padding: 5px 10px 5px 5px">
+        <div style="float: left; width: 100%;">
+          New File Path:<br>
+          <textarea class="round col-100" id="filepath2" placeholder="Example Path = ./logs/date/example-date/" class="round" type="textarea" rows="3"></textarea><br>
+        </div>
+      </div>
+      <div style="padding: 5px 10px 5px 5px">
+        <div>
+          <span>If you would like to create a directory, leave the filename section empty while setting format to 'OTHER' and task to 'Create'.</span>
+        </div>
+      </div>
+      <div style="padding: 5px 10px 5px 5px">
+        <div id="inputArea" class="" style="float: left; width: 100%;">
+          Input Text:<br>
+          <textarea id="input" placeholder="Leave Blank For None." class="round" type="textarea" rows="10"></textarea><br><br><br><br><br><br><br><br><br><br><br>
+        </div>
+        <div style="padding: 5px 10px 5px 5px;display: none;" id='visibot'>
+          <label class="switch">
+            <input onclick="if(checked){value='yes'}else{value='no'}" type="checkbox" id="togglestatus" value='no'>
+            <span class="slider round"></span>
+          </label>
+          <span>Toggle this if your data contains Objects (Json, array, etc...)</span>
+        </div>
+        <div id="lineInsert" class="" style="float: left; width: 65%;">
+          Line to Insert at:<br>
+          <input id="input2" placeholder="1 Adds content at the first line." class="round"></input>
+        </div>
+      </div>
+    </div>
+  </div>`;
+  },
+
+  init() {
+    const { document } = this;
+    const selector = document.getElementById('filetask');
+    const selector2 = document.getElementById('format');
+    const targetfield = document.getElementById('inputArea');
+    const targetfield2 = document.getElementById('lineInsert');
+    const targetField3 = document.getElementById('newPath');
+    const val1 = document.getElementById('togglestatus').value;
+    if (val1 === 'yes') document.getElementById('togglestatus').checked = true;
+
+    function showInput() {
+      const selected = selector[selector.selectedIndex].value;
+      const selected2 = selector2[selector2.selectedIndex].value;
+      if (selected2 === '.json' && (selected !== '5' || selected !== '4')) {
+        document.getElementById('visibot').style.display = 'block';
+      } else {
+        document.getElementById('visibot').style.display = 'none';
+      }
+      if (selected === '0' || selected === '3' || selected === '5') {
+        // Hides "Input Text"
+        targetfield.classList.add('hidden');
+      } else {
+        targetfield.classList.remove('hidden');
+      }
+      if (selected === '4') {
+        targetfield2.classList.remove('hidden');
+      } else {
+        targetfield2.classList.add('hidden'); // Hides "Line to Insert at"
+      }
+      if (selected === '5') {
+        // Hides "New File Path"
+        targetField3.classList.remove('hidden');
+      } else {
+        targetField3.classList.add('hidden');
+      }
+    }
+
+    selector.onclick = () => showInput();
+  },
+
+  async action(cache) {
+    const path = require('path');
+    const Mods = this.getMods();
+    const fs = Mods.require('fs-extra');
+    const insertLine = Mods.require('insert-line');
+
+    const data = cache.actions[cache.index];
+    const dirName = path.normalize(this.evalMessage(data.filepath, cache));
+    const dirName2 = path.normalize(this.evalMessage(data.filepath2, cache));
+    const fileName = this.evalMessage(data.filename, cache);
+    const line = parseInt(this.evalMessage(data.input2, cache), 10);
+    const togglestat = data.togglestatus;
+
+    const fpath = path.join(dirName, fileName + data.format);
+    const fpath2 = path.join(dirName2, fileName + data.format);
+    const task = parseInt(data.filetask, 10);
+    const itext = this.evalMessage(data.input, cache);
+    const lmg = 'Something went wrong while';
+
+    try {
+      switch (task) {
+        case 0: // Create File
+          if (fileName === '') break;
+          fs.pathExistsSync(path.join(fpath, fileName))
+            ? console.log('File already exists!')
+            : fs.writeFileSync(fpath, '');
+          break;
+        case 1: // Write File
+          if (fileName === '') throw new Error('File Name not Provided:');
+          fs.writeFileSync(fpath, togglestat === 'yes' ? JSON.stringify(itext) : itext);
+          break;
+        case 2: // Append File
+          if (fileName === '') throw new Error('File Name not Provided:');
+          fs.appendFileSync(fpath, `${togglestat === 'yes' ? JSON.stringify(itext) : itext}\r\n`);
+          break;
+        case 4: // Insert Line to File
+          if (fileName === '') throw new Error('File Name not Provided:');
+          insertLine(fpath)
+            .content(itext)
+            .at(line)
+            .then((err) => {
+              if (err) return console.error(`${lmg} inserting: [${err}]`);
+            });
+          break;
+        case 3: // Delete File
+          fs.unlinkSync(fpath);
+          break;
+        case 5: // Copy File
+          fs.copySync(fpath, fpath2);
+          break;
+        default:
+          break;
+      }
+    } catch (err) {
+      const type = ['creating', 'writing', 'appending', 'deleting', 'copying'][task];
+      return console.error(`${lmg} ${type} [${err}]`);
+    }
+
+    try {
+      if (dirName) {
+        fs.ensureDirSync(path.normalize(dirName));
+      } else {
+        throw new Error('you did not set a file path, please go back and check your work.');
+      }
+    } catch (err) {
+      return console.error(`ERROR ${err.stack || err}`);
+    }
+    this.callNextAction(cache);
+  },
+
+  mod() {},
+};
