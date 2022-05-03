@@ -9,38 +9,31 @@ IMPORTANT: READ THIS BEFORE RUNNING BOT OR ADIING IT TO SERVER
 INTRODUCTION
 
 This is bot that creates spotted infrascturcture on your dc server
-when it joins it creates 3 channels and 1 role
+when it joins it creates 2 channels and 1 role
 
-1. Post channel 	- people can send their messages here, it gets deleted as soon as it appears on channel
-			- if someone wants to attach image to this file he has to type 'img' in his message, also please don't dype it if not attaching any image
-			- you cant attach any other files
-			- bot will be sending message 'Have you muted this channel?' every 15 minutes and delete them soon after, so user who didn't mute this channel will be constantly getting notifications
+1. Spotted channel	- bot sends here anonymous messages after command /spotted was used by member
 
-2. Spotted channel	- bot sends here anonymous messages sent by users
-
-3. Logs channel		- only administrator can see this channel
+2. Logs channel		- only administrator can see this channel
 			- here are gathered logs of spotted such as author and his message including attachment
 			- this is your only way to punish trolls
 3. Damn Troll role	- as any one on server can use spotted bot creates role to mark users banned from using spotted (both of them)
 #################################################################################################
 Other commands
 
-!rc - recreates post, logs and spotted channel (in case of admin betrayal)(recreated channel doesn't contain previous messages)
+/rc - recreates post, logs and spotted channel (in case of admin betrayal)(recreated channel doesn't contain previous messages)
 
-!cl x y - in other words clean message - it may happen that mute reminder will not be deleted so with this command you can delete bulk messages, x means number of messages to dele on post, and y on nsfw (read further to understand nsfw channel)
+/cl - in other words clean message - it may happen that mute reminder will not be deleted so with this command you can delete bulk messages
 
-!nsfw - its addon that creates spotted nsfw channels
+/nsfw - its addon that creates spotted nsfw channels
 ####################################################################################################
-!nsfw addon
+/nsfw addon
 
-Creates two channels and one role:
-1. nsfw channel - its just like post but for nsfw materials (hidden for every one without role)
-2. nsfw spotted channel - just like spotted but for nsfw materials (hidden for every one without role)
-3. nsfw spotter role - eneables people to nsfw addon's channel
+Creates one channel and one role:
+1. nsfw channel - its just like spotted but for nsfw materials (hidden for every one without role)
+2. nsfw spotter role - eneables people to use nsfw addon's channel (decide yourself who should have it)
 ###################################################################################################
 Configuring your bot:
 
-Since only polish version of this bot is hosted by me (no you cant get the link for it)
 you have to host it yourself
 1. enter https://discord.com/developers/applications
 2. create your bott aplication
@@ -68,7 +61,7 @@ Run your bot
 
 YOU HAVE TO RUN BOT FIRST AND THEN ADD IT TO SERVER OR CHANNELS WON'T BE CRAETED
 
-To add bot to your server insert this url in your web browser: https://discord.com/api/oauth2/authorize?client_id='your_app_id'6&permissions=8&scope=bot%20applications.commands
+To add bot to your server insert this url in your web browser: https://discord.com/api/oauth2/authorize?client_id=YOUR BOT APP ID&permissions=8&scope=bot%20applications.commands
 ################################################################################################################
 
 Youre welcome to insert your own changes to this bot but it was created using Discord Bot Maker so it might be really hard to do without this tool, 
